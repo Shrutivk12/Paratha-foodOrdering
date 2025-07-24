@@ -40,7 +40,42 @@ module.exports.updateStatus = async (req, res) =>{
         await Order.findByIdAndUpdate(req.body.orderId, {status: req.body.status});
         res.json({success: true, message: "Status updated"});
     }catch(err){
-        console.log(error);
+        console.log(err);
         res.json({success: false, message: "Error"});
     }
+}
+
+module.exports.getOrderStats = async (req, res) => {
+  try {
+    const stats = await Order.aggregate([
+      { $unwind: "$items" },  // break items[] into individual docs
+      {
+        $group: {
+          _id: "$items.itemId",              // group by itemId (Food ID)
+          totalOrdered: { $sum: "$items.quantity" }
+        }
+      },
+      {
+        $lookup: {
+          from: "foods",                     // collection name (check yours)
+          localField: "_id",
+          foreignField: "_id",
+          as: "foodDetails"
+        }
+      },
+      { $unwind: "$foodDetails" },
+      {
+        $project: {
+          _id: 0,
+          foodName: "$foodDetails.name",
+          totalOrdered: 1
+        }
+      }
+    ]);
+
+    res.json({success: true, data: stats});
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Something went wrong" });
+  }
 }

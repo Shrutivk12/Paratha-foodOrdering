@@ -14,7 +14,7 @@ const Orders = ({url}) => {
         const response = await axios.get(`${url}/order/list`);
         if(response.data.success){
             setData(response.data.data)
-            console.log(response.data.data);
+            // console.log(response.data.data);
         }else{
           toast.error("Error");
         }
@@ -22,6 +22,9 @@ const Orders = ({url}) => {
         console.log("Failed" + err);  
     } 
   }
+
+  const [orderStats, setOrderStats] = useState([]);
+  
 
   const statusHandler = async(event, orderId)=>{
     const response = await axios.post(`${url}/order/status`, {orderId, status: event.target.value});
@@ -32,11 +35,26 @@ const Orders = ({url}) => {
 
   useEffect(()=>{
     getOrders();
+    const getOrdersStats = async () => {
+      try {
+        const res = await axios.get(`${url}/order/admin/parathastats`);
+        console.log(res.data.data);
+        setOrderStats(res.data.data);
+      } catch (error) {
+        console.error("Error fetching stats:", error);
+      }
+    }
+    getOrdersStats();
   },[])
 
   return (
     <div className='order add'>
       <h3>All Orders</h3>
+      <div>
+        {orderStats.map((item,index) => (
+          <p key={index}><b>{item.foodName}: </b> {item.totalOrdered}</p>
+        ))}
+      </div>
       <div className='order-list'>
         {data.map((order, index)=>(
           <div key={index} className='order-item'>
