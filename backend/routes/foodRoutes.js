@@ -18,4 +18,6 @@ router.post("/add", upload.single('image'), wrapAsync(foodController.addFood) );
 router.get("/list",  wrapAsync(foodController.showFoodList) );
 router.post("/remove",  wrapAsync(foodController.removeFood) );
 
+router.post("/:id/instock", wrapAsync(foodController.updateInStock));
+
 module.exports = router;

@@ -10,7 +10,7 @@ router.get("/list", wrapAsync(orderController.getAllOrders));
 router.post("/status", wrapAsync(orderController.updateStatus));
 
 // Route: GET /api/admin/parathastats
-router.get('/admin/parathastats', orderController.getOrderStats);
+router.get('/admin/parathastats', wrapAsync(orderController.getOrderStats));
 
 
 module.exports = router;

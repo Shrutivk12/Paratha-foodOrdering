@@ -47,6 +47,17 @@
     border-radius: 50%;
     background-color: white;
 }
+.food-item-img-container .in-stock {
+    /* width: 35px; */
+    height: 35px;
+    position: absolute;
+    bottom: 15px;
+    right: 15px;
+    /* cursor: pointer; */
+    border-radius: 4px;
+    background-color: rgb(255, 225, 225);
+    padding: 8px 16px;
+}
 
 .food-item-img-container .add i{
     font-size: 18px;

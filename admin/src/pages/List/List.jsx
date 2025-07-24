@@ -26,6 +26,16 @@ const List = ({url}) => {
       }
   }
 
+  const toggleStock = async (id, newStatus) => {
+    try {
+      const response = await axios.post(`${url}/api/food/${id}/instock`, { inStock: newStatus });
+      // Refresh food list or update state
+      fetchList();
+    } catch (err) {
+      console.error(err);
+    }
+};
+
   useEffect(() => {
     fetchList();
   },[])
@@ -47,7 +57,9 @@ const List = ({url}) => {
               <img src={`${url}/images/`+item.image} alt="" />
               <p>{item.name}</p>
               <p>&#8377;{item.price}</p>
-              {item.inStock?<p>In Stock</p>:<p>Out of Stock</p>}
+              <p className='cursor' onClick={() => toggleStock(item._id, !item.inStock)}>
+                {item.inStock ? 'In stock' : 'Out of stock'}
+              </p>
               <p onClick={() => removeFood(item._id)} className='cursor'><i className="fa-solid fa-xmark"></i></p>
             </div>
           )

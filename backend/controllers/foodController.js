@@ -44,3 +44,13 @@ module.exports.removeFood = async (req, res) => {
         res.json({success:false, message:"Removing item failed"})
     }
 }
+
+module.exports.updateInStock = async(req, res) => {
+    try {
+        const { inStock } = req.body;
+        const food = await Food.findByIdAndUpdate(req.params.id, { inStock }, { new: true });
+        res.json(food);
+    } catch (err) {
+        res.status(500).json({ error: "Failed to update stock status" });
+    }
+}

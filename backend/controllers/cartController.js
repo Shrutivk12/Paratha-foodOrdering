@@ -1,9 +1,14 @@
 const User = require("../models/user.js");
+const Food = require("../models/food.js");
 
 module.exports.addToCart = async (req, res) => {
     try{
         let currUser = req.user;
         const cartData = currUser.cartData;
+        const food = await Food.findById(req.body.itemId);
+        if (!food || !food.inStock) {
+            return res.json({success: false, message: "Item is out of stock!" });
+        }
         if(!cartData[req.body.itemId]){
             cartData[req.body.itemId] = 1;
         }else{

@@ -21,7 +21,7 @@ const sessionOptions = {
   store,
   secret: process.env.SECRET,
   resave: false,
-  saveUninitialized: true,
+  saveUninitialized: false,
   cookie: {
     secure: false,
     expires : Date.now() + 7 * 24 * 60 * 60 * 1000,
