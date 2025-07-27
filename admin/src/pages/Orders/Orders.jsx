@@ -33,12 +33,38 @@ const Orders = ({url}) => {
     }
   }
 
+  const markAllOrders = async (newStatus) => {
+    try {
+      const res = await axios.post(`${url}/order/admin/allstatus`, { status: newStatus });
+      if(res.data.success){
+        toast.success(res.data.message);
+        getOrders();
+      }
+
+      // Optionally refresh orders list
+    } catch (err) {
+      alert("Failed to update orders");
+    }
+  };
+
+  const handleDeleteOrders = async () => {
+    try {
+      const res = await axios.delete(`${url}/order/admin/delete`);
+      if(res.data.success){
+        toast.success(`Deleted ${res.data.deletedCount} orders`);
+        getOrders();
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Failed to delete orders");
+    }
+  };
+
   useEffect(()=>{
     getOrders();
     const getOrdersStats = async () => {
       try {
         const res = await axios.get(`${url}/order/admin/parathastats`);
-        console.log(res.data.data);
         setOrderStats(res.data.data);
       } catch (error) {
         console.error("Error fetching stats:", error);
@@ -50,10 +76,17 @@ const Orders = ({url}) => {
   return (
     <div className='order add'>
       <h3>All Orders</h3>
-      <div>
+      <div className='admin-ops'>
+        <div className='admin-stats'>
         {orderStats.map((item,index) => (
           <p key={index}><b>{item.foodName}: </b> {item.totalOrdered}</p>
         ))}
+        </div>
+        <div className='btns'>
+          <button onClick={() => markAllOrders("Out for delivery")}>All Out for delivery</button>
+          <button onClick={() => markAllOrders("Delivered")}>All Delivered</button>
+          <button onClick={() => handleDeleteOrders()}>Delete Old Orders</button>
+        </div>
       </div>
       <div className='order-list'>
         {data.map((order, index)=>(
@@ -75,10 +108,10 @@ const Orders = ({url}) => {
             </div>
             <p>&#8377; {order.totalAmount}</p>
             <select onChange={(event)=>statusHandler(event, order._id)} value={order.status}>
-              <option value="Food Processing">Food Processing</option>
-              <option value="Out for delivery">Out for delivery</option>
-              <option value="Delivered">Delivered</option>
-              <option value="Paid">Paid</option>
+              <option value="Preparing">Preparing</option>
+              <option value="Cancelled" style={{color:"red"}}>Cancelled</option>
+              <option value="Out for delivery" >Out for delivery</option>
+              <option value="Delivered" >Delivered</option>
             </select>
 
             

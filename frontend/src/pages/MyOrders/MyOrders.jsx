@@ -2,6 +2,7 @@ import React, { useEffect, useState, useContext } from 'react'
 import "./MyOrders.css"
 import { StoreContext } from '../../context/StoreContext';
 import axios from 'axios';
+import { toast } from 'react-toastify';
 
 const MyOrders = () => {
 
@@ -20,6 +21,19 @@ const MyOrders = () => {
             
         } 
     }
+
+    const cancelOrder = async (orderId) => {
+        try {
+            const res = await axios.post(`${url}/order/${orderId}/cancel`, {}, {withCredentials: true});
+            if(res.data.success){
+                toast.success("Order cancelled");
+                getOrders(); 
+            }
+        } catch (err) {
+            console.error(err);
+            alert(err.response?.data?.error || "Error cancelling order");
+        }
+    };
 
     useEffect(() =>{
         if(loggedIn){
@@ -48,10 +62,16 @@ const MyOrders = () => {
                 })}</p>
                 <p><strong>Date:</strong> {new Date(order.createdAt).toLocaleString()}</p>
                 <p><strong>Total:</strong> &#8377;{order.totalAmount}</p>
-                <p><b>&#x25cf; {order.status}</b></p>
+                <p style={order.status == "Cancelled" ? {color: "tomato"}: {color: "green"}}><b>&#x25cf; {order.status}</b></p>
                 <div className='btns'>
+                    {order.status === "Preparing" && (
+                    <>
                     <button>Pay</button>
-                    <button>Cancel</button>
+                    <button onClick={() => cancelOrder(order._id)}>
+                        Cancel
+                    </button>
+                    </>
+                    )}
                 </div>
             </div>
         ))}

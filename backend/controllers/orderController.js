@@ -48,6 +48,7 @@ module.exports.updateStatus = async (req, res) =>{
 module.exports.getOrderStats = async (req, res) => {
   try {
     const stats = await Order.aggregate([
+      { $match: { status: "Preparing" } },
       { $unwind: "$items" },  // break items[] into individual docs
       {
         $group: {
@@ -77,5 +78,60 @@ module.exports.getOrderStats = async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Something went wrong" });
+  }
+}
+
+module.exports.updateAllStatus = async(req, res) => {
+  const { status } = req.body;
+  if (!['Preparing', 'Out for delivery', 'Delivered'].includes(status)) {
+    return res.status(400).json({ message: "Invalid status" });
+  }
+  try{
+    const updatedOrders = await Order.updateMany(
+      { status: { $ne: 'Cancelled' } }, 
+      { $set: { status } }
+    );
+    //email option will come here 
+    res.json({success: true, message: `All orders marked as '${status}'`, updated: updatedOrders.modifiedCount });
+  }catch(err){
+    res.json({success:false, message: err.message});
+  }
+}
+
+module.exports.deleteAllOrders = async(req, res) => {
+  try {
+    const result = await Order.deleteMany({
+      $or: [
+        { payment: true },
+        { status: "Cancelled" }
+      ]
+    });
+
+    res.json({ success: true, deletedCount: result.deletedCount });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Failed to delete orders" });
+  }
+}
+
+module.exports.cancelOrder = async(req, res) => {
+  try {
+    const orderId = req.params.id;
+
+    //Add check that user owns the order (security)
+    const order = await Order.findById(orderId);
+
+    if (!order) return res.status(404).json({ message: "Order not found" });
+    if (order.status !== 'Preparing') {
+      return res.status(400).json({ message: "Order cannot be cancelled now" });
+    }
+
+    order.status = "Cancelled";
+    await order.save();
+
+    res.json({ success: true, message: "Order cancelled" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Failed to cancel order" });
   }
 }
