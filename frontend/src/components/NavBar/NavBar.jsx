@@ -42,7 +42,7 @@ const NavBar = ({setShowLogin}) => {
           <div className={getTotalAmount() ? "dot":""}></div>
         </div></Link>
         {(!loggedIn)
-          ?<button onClick={ () => {setShowLogin(true)}}>Sign in</button>
+          ?<button onClick={ () => {setShowLogin(true)}} style={{color:"black"}}>Sign in</button>
           :<div className='navbar-profile'>
             <div className="profile"><i className="fa-solid fa-circle-user"></i></div>
             <ul className="nav-profile-dropdown">

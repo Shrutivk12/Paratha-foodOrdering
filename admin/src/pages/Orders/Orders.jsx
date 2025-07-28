@@ -41,7 +41,6 @@ const Orders = ({url}) => {
         getOrders();
       }
 
-      // Optionally refresh orders list
     } catch (err) {
       alert("Failed to update orders");
     }

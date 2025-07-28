@@ -29,6 +29,7 @@ main()
 .then((res) => {console.log("connected to db")})
 .catch(err => console.log(err));
 
+
 //session config
 store.on("error", () =>{
   console.log("error in session store", err);
@@ -62,6 +63,8 @@ app.use("/cart", cartRouter);
 //orders
 app.use("/order", orderRouter);
 
+//scheduled jobs
+require('./cronJobs/paymentReminder');
 
 app.get("/", (req, res) => {
     res.send("app working");

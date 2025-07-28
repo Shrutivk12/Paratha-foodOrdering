@@ -2,6 +2,7 @@ const User = require("../models/user.js");
 const Order = require("../models/order.js");
 const Food = require("../models/food.js");
 const { cloudinary } = require('../config/cloud.js');
+const {sendMail} = require('../config/mailer.js');
 
 module.exports.placeOrder = async (req, res) => {
     try{
@@ -88,12 +89,35 @@ module.exports.updateAllStatus = async(req, res) => {
     return res.status(400).json({ message: "Invalid status" });
   }
   try{
-    const updatedOrders = await Order.updateMany(
+    const updated = await Order.updateMany(
       { status: { $ne: 'Cancelled' } }, 
       { $set: { status } }
     );
-    //email option will come here 
-    res.json({success: true, message: `All orders marked as '${status}'`, updated: updatedOrders.modifiedCount });
+
+    const updatedOrders = await Order.find({ status }).populate('user');
+    
+    const emailPromises = [];
+    for (const order of updatedOrders) {
+      const userEmail = order.user?.email;
+      if (!userEmail) continue;
+
+      if (status === 'Out for delivery') {
+        emailPromises.push(
+          sendMail(userEmail, 'Order Update', 'Your order is out for delivery 🚚')
+        );
+      } else if (status === 'Delivered') {
+        emailPromises.push(
+          sendMail(userEmail, 'Order Delivered', 'Your order has been delivered ✅')
+        );
+      }
+    }
+    try{
+      await Promise.all(emailPromises);
+    }catch(err){
+      console.log(err);
+    }
+
+    res.json({success: true, message: `All orders marked as '${status}'`, updated: updated.modifiedCount });
   }catch(err){
     res.json({success:false, message: err.message});
   }
