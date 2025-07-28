@@ -1,0 +1,48 @@
+.payment {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem;
+  gap: 1.5rem;
+  background-color: #f9f9f9;
+  min-height: 100vh;
+}
+.payment img {
+  max-width: 200px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+.pay-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+  max-width: 400px;
+  padding: 2rem;
+  background: white;
+  border-radius: 4px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+}
+.add-image-upload {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+.add-image-upload p {
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.add-image-upload label {
+  cursor: pointer;
+}
+
+button {
+  background-color: tomato;
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+}

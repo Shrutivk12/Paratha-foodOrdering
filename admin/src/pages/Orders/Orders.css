@@ -3,7 +3,7 @@
 }
 .order-item{
     display: grid;
-    grid-template-columns: 0.25fr 3fr 1fr 1fr;
+    grid-template-columns: 0.25fr 3fr 1fr 1fr 1fr 1fr;
     align-items: start;
     gap: 30px;
     border: 1px solid #a9a9a9;
@@ -48,10 +48,16 @@
     color: #ffffff;
 }
 
+.order-item .check-paid{
+    color: tomato;
+    font-weight: 600;
+    cursor: pointer;
+}
+
 @media (max-width: 1000px) {
     .order-item{
         font-size: 12px;
-        grid-template-columns: 0.5fr 2.5fr;
+        grid-template-columns: 1fr 2.5fr;
         padding: 15px 20px;
     }
     .order-item select{
@@ -64,13 +70,12 @@
         gap: 16px;
         align-items: start;
     }
+    .admin-ops .btns{
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
     .admin-ops .btns button{
-    border: none;
-    font-size: 12px;
-    padding: 10px 16px;
-    border-radius: 4px;
-    background-color: tomato;
-    cursor: pointer;
-    color: #ffffff;
-}
+        font-size: 12px;
+    }
 }

@@ -3,11 +3,13 @@ import "./MyOrders.css"
 import { StoreContext } from '../../context/StoreContext';
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
 
 const MyOrders = () => {
 
     const {url, loggedIn} = useContext(StoreContext);
     const [data, setData] = useState([]);
+    const navigate = useNavigate();
 
     const getOrders = async() => {
         try{
@@ -64,13 +66,11 @@ const MyOrders = () => {
                 <p><strong>Total:</strong> &#8377;{order.totalAmount}</p>
                 <p style={order.status == "Cancelled" ? {color: "tomato"}: {color: "green"}}><b>&#x25cf; {order.status}</b></p>
                 <div className='btns'>
+                    <button onClick={() => navigate(`/myorders/${order._id}/pay`)}>Pay</button>
                     {order.status === "Preparing" && (
-                    <>
-                    <button>Pay</button>
                     <button onClick={() => cancelOrder(order._id)}>
                         Cancel
                     </button>
-                    </>
                     )}
                 </div>
             </div>

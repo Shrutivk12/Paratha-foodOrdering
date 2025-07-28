@@ -4,6 +4,7 @@ import { Route, Routes } from 'react-router-dom'
 import Home from './pages/Home/Home'
 import Cart from './pages/Cart/Cart'
 import MyOrders from './pages/MyOrders/MyOrders'
+import Payment from './pages/Payment/Payment'
 import Footer from './components/Footer/Footer'
 import LoginPopup from './components/LoginPopup/LoginPopup'
 import { ToastContainer} from 'react-toastify'
@@ -23,6 +24,7 @@ const App = () => {
         <Route path='/' element={ <Home/> }/>
         <Route path='/cart' element={ <Cart/> }/>
         <Route path='/myorders' element={ <MyOrders/> }/>
+        <Route path='/myorders/:id/pay' element={ <Payment/> }/>
       </Routes>
     </div>
     <Footer/>

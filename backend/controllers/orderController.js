@@ -1,6 +1,7 @@
 const User = require("../models/user.js");
 const Order = require("../models/order.js");
 const Food = require("../models/food.js");
+const { cloudinary } = require('../config/cloud.js');
 
 module.exports.placeOrder = async (req, res) => {
     try{
@@ -100,6 +101,22 @@ module.exports.updateAllStatus = async(req, res) => {
 
 module.exports.deleteAllOrders = async(req, res) => {
   try {
+    const ordersToDelete = await Order.find({
+      $or: [
+        { payment: true },
+        { status: "Cancelled" }
+      ]
+    });
+
+    for (const order of ordersToDelete) {
+      if (order.paymentScreenshot) {
+        const publicId = extractPublicId(order.paymentScreenshot);
+        if (publicId) {
+          await cloudinary.uploader.destroy(publicId);
+        }
+      }
+    }
+
     const result = await Order.deleteMany({
       $or: [
         { payment: true },
@@ -111,6 +128,17 @@ module.exports.deleteAllOrders = async(req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Failed to delete orders" });
+  }
+}
+
+function extractPublicId(url) {
+  try {
+    const parts = url.split('/');
+    const filename = parts[parts.length - 1];
+    const publicId = filename.split('.')[0]; 
+    return `payment_screenshots/${publicId}`;
+  } catch (err) {
+    return null;
   }
 }
 
@@ -133,5 +161,43 @@ module.exports.cancelOrder = async(req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Failed to cancel order" });
+  }
+}
+
+module.exports.orderPayment = async(req, res) =>{ 
+  try {
+    const { id } = req.params;
+    const screenshotUrl = req.file.path;
+
+    await Order.findByIdAndUpdate(id, {
+      paymentScreenshot: screenshotUrl
+    });
+
+    res.json({ success: true, screenshot: screenshotUrl });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, error: 'Upload failed' });
+  }
+}
+
+module.exports.markAsPaid = async(req, res) => {
+  try {
+    const { id } = req.params;
+    const updatedOrder = await Order.findById(id);
+
+    if (!updatedOrder) {
+      return res.json({ success: false, message: "Order not found" });
+    }
+    if (!updatedOrder.paymentScreenshot) {
+      return res.json({ success: false, message: "Payment screenshot not uploaded yet" });
+    }
+
+    updatedOrder.payment = true;
+    await updatedOrder.save();
+
+    res.json({ success: true, message: "Order marked as paid", order: updatedOrder });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, message: "Internal server error" });
   }
 }

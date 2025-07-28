@@ -5,6 +5,8 @@ import plain from './plain.png';
 import aloo from './aloo.png';
 import paneer from './paneer.png';
 import gobi from './gobi.png';
+import qrcode from './QRCode.png';
+import upload_area from './upload_area.png';
 
 export const assets = {
     logo,
@@ -14,6 +16,8 @@ export const assets = {
     aloo,
     paneer,
     gobi,
+    qrcode,
+    upload_area,
 }
 
 export const food_list = [

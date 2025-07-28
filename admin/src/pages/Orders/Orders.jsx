@@ -60,6 +60,22 @@ const Orders = ({url}) => {
     }
   };
 
+  const markAsPaid = async (orderId) => {
+    try {
+      const res = await axios.post(`${url}/order/admin/${orderId}/paid`);
+      if (res.data.success) {
+        alert("Marked as paid");
+        getOrders(); 
+      }
+      else{
+        toast.error(res.data.message);
+        // alert(res.data.message);
+      }
+    } catch (err) {
+      // alert("Failed to mark as paid");
+    }
+  };
+
   useEffect(()=>{
     getOrders();
     const getOrdersStats = async () => {
@@ -89,6 +105,7 @@ const Orders = ({url}) => {
         </div>
       </div>
       <div className='order-list'>
+        {(data.length === 0) && <p style={{margin: "30px 0px"}}>No orders yet</p>}
         {data.map((order, index)=>(
           <div key={index} className='order-item'>
             <i className="fa-solid fa-basket-shopping"></i>
@@ -102,11 +119,23 @@ const Orders = ({url}) => {
                     }
                 })}
               </p>
-            
-            <p className='order-item-name'>{order.user.username}</p>
-            <p className='order-item-phone'>{order.user.phoneNo}</p>
+              <p className='order-item-name'>{order.user.username}</p>
+              <p className='order-item-phone'>{order.user.phoneNo}</p>
             </div>
+            <a 
+              className='check-paid' 
+              href={order.paymentScreenshot} 
+              style={order.paymentScreenshot ? {color: "green"}: {color: "tomato"}}>
+                {order.paymentScreenshot? "View payment": "Not paid"}
+            </a>
+            <p 
+              className='check-paid' 
+              onClick={() => markAsPaid(order._id)} 
+              style={{color: "green"}}>
+                {order.payment? "Paid": "Mark as paid"}
+            </p>
             <p>&#8377; {order.totalAmount}</p>
+
             <select onChange={(event)=>statusHandler(event, order._id)} value={order.status}>
               <option value="Preparing">Preparing</option>
               <option value="Cancelled" style={{color:"red"}}>Cancelled</option>
