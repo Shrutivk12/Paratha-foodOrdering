@@ -7,8 +7,7 @@ export const StoreContext = createContext(null);
 const StoreContextProvider = (props) =>{
 
     const [cartItems, setCartItems] = useState({});
-    const url = "http://localhost:8080";
-    const [user, setUser] = useState({});
+    const url = "https://name-server.onrender.com";
     const [loggedIn, setLoggedIn] = useState(false);
 
     const [food_list, setFoodList] = useState([]);
@@ -87,8 +86,6 @@ const StoreContextProvider = (props) =>{
         removeFromCart,
         getTotalAmount,
         url,
-        user,
-        setUser,
         loggedIn,
         setLoggedIn,
     }
