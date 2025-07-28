@@ -17,22 +17,18 @@ const StoreContextProvider = (props) =>{
     }
 
     useEffect(() => {
-        // console.log("Checking auth...");
         const checkAuth = async () => {
             try {
                 await getFoodList();
                 const res = await axios.get(`${url}/user/isauth`, {withCredentials: true});
                 if (res.data.success) {
                     setLoggedIn(true);
-                    setUser(res.data.user);
                     await loadCartData(loggedIn);
                 } else {
                     setLoggedIn(false);
-                    setUser(null);
                 }
             } catch (error) {
                 setLoggedIn(false);
-                setUser(null);
             }
         };
         checkAuth();
