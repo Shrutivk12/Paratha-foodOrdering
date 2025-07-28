@@ -8,7 +8,7 @@ const List = ({url}) => {
   const [list, setList] = useState([]); 
 
   const fetchList = async() =>{
-    const response = await axios.get(`${url}/api/food/list`);
+    const response = await axios.get(`${url}/food/admin/list`);
     if(response.data.success){
       setList(response.data.data);
     }else{
@@ -17,24 +17,32 @@ const List = ({url}) => {
   }
 
   const removeFood = async(foodId) =>{
-    const response = await axios.post(`${url}/api/food/remove`, {id:foodId});
+    const response = await axios.post(`${url}/food/admin/remove`, {id:foodId});
+    try{
       await fetchList();
       if(response.data.success){
         toast.success(response.data.message);
       }else{
         toast.error(response.data.message);
       }
+    }catch(err){
+      toast.error(err.response?.data?.message);
+    }
   }
 
   const toggleStock = async (id, newStatus) => {
     try {
-      const response = await axios.post(`${url}/api/food/${id}/instock`, { inStock: newStatus });
-      // Refresh food list or update state
-      fetchList();
+      const response = await axios.post(`${url}/food/admin/${id}/instock`, { inStock: newStatus });
+      if(response.data.success){
+        fetchList();
+        toast.success(response.data.message);
+      }else{
+        toast.error(response.data.message);
+      }
     } catch (err) {
-      console.error(err);
+      toast.error(err.response?.data?.message);
     }
-};
+  };
 
   useEffect(() => {
     fetchList();

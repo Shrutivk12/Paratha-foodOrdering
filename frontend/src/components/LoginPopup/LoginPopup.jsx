@@ -6,7 +6,7 @@ import { toast } from 'react-toastify';
 
 const LoginPopup = ({setShowLogin}) => {
 
-  const {url, setUser, setLoggedIn} = useContext(StoreContext);
+  const {url, setLoggedIn} = useContext(StoreContext);
   const [loginState, setLoginState] = useState("Login");
 
   const [data, setData] = useState({
@@ -31,26 +31,28 @@ const LoginPopup = ({setShowLogin}) => {
       newUrl += "/user/login";
     }
 
-    const response = await axios.post(newUrl, data, {withCredentials: true});
-    if(response.data.success){
-      setUser({
-        id: response.data.user._id,
-        username: response.data.user.username,
-        email: response.data.user.email,
-        phoneNo: response.data.user.phoneNo,
-        cartData: response.data.user.phoneNo,
-      });
-      setLoggedIn(true);
-      setShowLogin(false);
-      toast.success(response.data.message);
-    }else{
-      setData({
-        username: "",
-        email: "",
-        phoneNo: "",
-        password: "",
-      });
-      toast.error(response.data.message);
+
+
+    try {
+      const response = await axios.post(newUrl, data, {withCredentials: true});
+
+      if(response.data.success){
+        setLoggedIn(true);
+        setShowLogin(false);
+        toast.success(response.data.message);
+      }else{
+        setData({
+          username: "",
+          email: "",
+          phoneNo: "",
+          password: "",
+        });
+        toast.error(response.data.message);
+      }
+    
+    } catch (err) {
+      const msg = err.response?.data?.message || "Login failed";
+      toast.error(msg);
     }
   }
 

@@ -21,22 +21,26 @@ const Add = ({url}) => {
 
   const onSubmitHandler  = async(event) => {
     event.preventDefault();
-    const formData = new FormData();
-    formData.append("name", data.name);
-    formData.append("description", data.description);
-    formData.append("price", Number(data.price));
-    formData.append("image", image);
-    const response = await axios.post(`${url}/api/food/add`, formData);
-    if(response.data.success){
-      setData({
-        name: "",
-        description: "",
-        price: "",
-      });
-      setImage(false);
-      toast.success(response.data.message);
-    }else{
-      toast.error(response.data.message);
+    try{
+      const formData = new FormData();
+      formData.append("name", data.name);
+      formData.append("description", data.description);
+      formData.append("price", Number(data.price));
+      formData.append("image", image);
+      const response = await axios.post(`${url}/food/admin/add`, formData);
+      if(response.data.success){
+        setData({
+          name: "",
+          description: "",
+          price: "",
+        });
+        setImage(false);
+        toast.success(response.data.message);
+      }else{
+        toast.error(response.data.message);
+      }
+    }catch(err){
+      toast.error(err.response?.data?.message);
     }
   }
 

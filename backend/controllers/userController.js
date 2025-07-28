@@ -7,7 +7,7 @@ module.exports.signup = async (req, res) => {
     const registeredUser = await User.register(newUser, password);
     req.login(registeredUser, (err) => {
       if (err){
-          return res.json({ success: false, message: err.message });
+          return res.status(500).json({ success: false, message: err.message });
       }
       res.json({ 
         success: true,
@@ -21,8 +21,11 @@ module.exports.signup = async (req, res) => {
         }, 
       });
     });
-  }catch(err){
-    res.json({ success: false, message: err.message })
+  }catch(error){
+    res.status(400).json({ 
+      success: false, 
+      message: error.message || error || "Registration failed", 
+    });
   }
 };
 

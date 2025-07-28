@@ -13,15 +13,19 @@ const NavBar = ({setShowLogin}) => {
 
   const navigate = useNavigate();
   const logout = async() => {
-    const response = await axios.get(`${url}/user/logout`, {withCredentials: true});
-    if(response.data.success){
-      setLoggedIn(false);
-      setUser(null);
-      toast.success(response.data.message);
-      navigate("/");
-    }
-    else{
-      toast.error(response.data.message)
+    try{
+      const response = await axios.get(`${url}/user/logout`, {withCredentials: true});
+      if(response.data.success){
+        setLoggedIn(false);
+        setUser(null);
+        toast.success(response.data.message);
+        navigate("/");
+      }
+      else{
+        toast.error(response.data.message)
+      }
+    }catch(err){
+      toast.error(err.response?.data?.message || "Cannot logout");
     }
   }
 

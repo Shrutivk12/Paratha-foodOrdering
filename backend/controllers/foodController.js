@@ -5,8 +5,6 @@ module.exports.addFood = async (req, res) => {
     try{
         if(!req.file){
             return res.json({success:false, message:"Image is required"})
-            // newFood.image = req.file.filename;
-            // console.log(req.file);
         }
         let img_filename = `${req.file.filename}`;
         let newFood = new Food({
@@ -26,7 +24,6 @@ module.exports.addFood = async (req, res) => {
 module.exports.showFoodList = async (req, res) => {
     try{
         const foodList = await Food.find({});
-        // res.send(foodList);
         res.json({success: true, message: "List fetched", data: foodList});
     }catch(err){
         res.json({success:false, message:"List cannot be fetched"})
@@ -51,6 +48,6 @@ module.exports.updateInStock = async(req, res) => {
         const food = await Food.findByIdAndUpdate(req.params.id, { inStock }, { new: true });
         res.json(food);
     } catch (err) {
-        res.status(500).json({ error: "Failed to update stock status" });
+        res.status(500).json({success: false, message: "Failed to update stock status" });
     }
 }

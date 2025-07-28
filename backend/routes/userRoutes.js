@@ -5,10 +5,12 @@ const wrapAsync = require("../utils/wrapAsync.js");
 const User = require("../models/user.js");
 const passport = require('passport');
 const isAuthenticated = require('../middlewares/isAuthenticated');
+const loginMiddleware = require('../middlewares/loginMiddleware.js');
+
 
 router.post("/signup", wrapAsync(userController.signup));
 
-router.post("/login", passport.authenticate('local'), userController.login);
+router.post("/login", loginMiddleware, userController.login);
 
 router.get("/logout", userController.logout);
 

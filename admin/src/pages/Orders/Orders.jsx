@@ -9,27 +9,29 @@ const Orders = ({url}) => {
 
 
   const [data, setData] = useState([]);
+  const [orderStats, setOrderStats] = useState([]);
+
   const getOrders = async() => {
     try{
-        const response = await axios.get(`${url}/order/list`);
+        const response = await axios.get(`${url}/order/admin/list`);
         if(response.data.success){
-            setData(response.data.data)
-            // console.log(response.data.data);
+            setData(response.data.data);
         }else{
           toast.error("Error");
         }
     }catch(err) {
-        console.log("Failed" + err);  
+        toast.error(err.response?.data?.message);
     } 
   }
 
-  const [orderStats, setOrderStats] = useState([]);
-  
-
   const statusHandler = async(event, orderId)=>{
-    const response = await axios.post(`${url}/order/status`, {orderId, status: event.target.value});
-    if(response.data.success){
-      getOrders();
+    try{
+      const response = await axios.post(`${url}/order/admin/status`, {orderId, status: event.target.value});
+      if(response.data.success){
+        getOrders();
+      }
+    }catch(err){
+      toast.error(err.response?.data?.message);
     }
   }
 
@@ -42,7 +44,7 @@ const Orders = ({url}) => {
       }
 
     } catch (err) {
-      alert("Failed to update orders");
+      toast.error(err.response?.data?.message);
     }
   };
 
@@ -54,8 +56,7 @@ const Orders = ({url}) => {
         getOrders();
       }
     } catch (err) {
-      console.error(err);
-      alert("Failed to delete orders");
+      toast.error(err.response?.data?.message);
     }
   };
 
@@ -63,15 +64,14 @@ const Orders = ({url}) => {
     try {
       const res = await axios.post(`${url}/order/admin/${orderId}/paid`);
       if (res.data.success) {
-        alert("Marked as paid");
+        toast.success("Mark as paid");
         getOrders(); 
       }
       else{
         toast.error(res.data.message);
-        // alert(res.data.message);
       }
     } catch (err) {
-      // alert("Failed to mark as paid");
+      toast.error(err.response?.data?.message);
     }
   };
 

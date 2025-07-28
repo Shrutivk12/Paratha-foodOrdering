@@ -15,8 +15,8 @@ router.post("/:id/cancel", isAuthenticated, wrapAsync(orderController.cancelOrde
 router.post("/:id/payment", isAuthenticated, upload.single('screenshot'), wrapAsync(orderController.orderPayment));
 
 //admin
-router.get("/list", wrapAsync(orderController.getAllOrders));
-router.post("/status", wrapAsync(orderController.updateStatus));
+router.get("/admin/list", wrapAsync(orderController.getAllOrders));
+router.post("/admin/status", wrapAsync(orderController.updateStatus));
 router.get('/admin/parathastats', wrapAsync(orderController.getOrderStats));
 router.post('/admin/allstatus', wrapAsync(orderController.updateAllStatus));
 router.delete('/admin/delete', wrapAsync(orderController.deleteAllOrders));

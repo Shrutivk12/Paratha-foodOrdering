@@ -3,7 +3,7 @@ const Order = require('../models/order.js')
 const {sendMail} = require('../config/mailer.js');
 
 
-cron.schedule('00 17 * * *', async () => {
+cron.schedule('30 16 * * *', async () => {
   try {
     
     const unpaidOrders = await Order.find({ payment: false, status: { $ne: 'Cancelled' } }).populate('user');

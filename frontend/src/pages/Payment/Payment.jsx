@@ -6,6 +6,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { StoreContext } from '../../context/StoreContext';
 import { useContext } from 'react';
 import axios from 'axios';
+import { toast } from 'react-toastify';
 
 const Payment = () => {
     const {url} = useContext(StoreContext);
@@ -17,7 +18,7 @@ const Payment = () => {
 
     const handleUpload = async (e) => {
         e.preventDefault();
-        if (!screenshot) return alert("Select screenshot");
+        if (!screenshot) return toast.error("Select screenshot");
 
         const formData = new FormData();
         formData.append("screenshot", screenshot);
@@ -35,12 +36,11 @@ const Payment = () => {
             );
 
             if (res.data.success) {
-                alert("Screenshot uploaded!");
+                toast.success("Screenshot uploaded!");
                 navigate("/myorders");
             }
         } catch (err) {
-            console.error(err);
-            alert("Failed to upload screenshot");
+            toast.error("Failed to upload screenshot");
         } finally {
             setLoading(false);
         }

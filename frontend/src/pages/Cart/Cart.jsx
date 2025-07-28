@@ -21,13 +21,17 @@ const Cart = () => {
       return toast.error("Cart is Empty");
     }
 
-    const res = await axios.post(`${url}/order/place`, { items, totalAmount }, { withCredentials: true });
-    if (res.data.success) {
-      setCartItems({});
-      toast.success("Order placed");
-      navigate("/myorders");
-    } else {
-      toast.error("Failed to place order");
+    try{
+      const res = await axios.post(`${url}/order/place`, { items, totalAmount }, { withCredentials: true });
+      if (res.data.success) {
+        setCartItems({});
+        toast.success("Order placed");
+        navigate("/myorders");
+      } else {
+        toast.error("Failed to place order");
+      }
+    }catch{
+      toast.error(err.response?.data?.message || "Failed to place order");
     }
   }
 

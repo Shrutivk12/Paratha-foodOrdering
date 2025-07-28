@@ -4,6 +4,8 @@ const Food = require("../models/food.js");
 const { cloudinary } = require('../config/cloud.js');
 const {sendMail} = require('../config/mailer.js');
 
+//client side
+
 module.exports.placeOrder = async (req, res) => {
     try{
         const {items, totalAmount} = req.body;
@@ -12,7 +14,7 @@ module.exports.placeOrder = async (req, res) => {
         await User.findByIdAndUpdate(req.user._id, { cartData: {} });
         res.json({ success: true, message: "Order Placed", order });
     }catch(err){
-        res.json({ success: false, message: "Failed to create order" });
+        res.json({ success: false, message: "Failed to place order" });
     }
 }
 
@@ -26,7 +28,45 @@ module.exports.getUserOrders = async (req, res) => {
     }
 }
 
-//Listing orders for admin
+module.exports.cancelOrder = async(req, res) => {
+  try {
+    const orderId = req.params.id;
+
+    const order = await Order.findById(orderId);
+
+    if (!order) return res.status(404).json({ message: "Order not found" });
+    if (order.status !== 'Preparing') {
+      return res.status(400).json({ message: "Order cannot be cancelled now" });
+    }
+
+    order.status = "Cancelled";
+    await order.save();
+
+    res.json({ success: true, message: "Order cancelled" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Failed to cancel order" });
+  }
+}
+
+module.exports.orderPayment = async(req, res) =>{ 
+  try {
+    const { id } = req.params;
+    const screenshotUrl = req.file.path;
+
+    await Order.findByIdAndUpdate(id, {
+      paymentScreenshot: screenshotUrl
+    });
+
+    res.json({ success: true, screenshot: screenshotUrl });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, error: 'Upload failed' });
+  }
+}
+
+//Admin side
+
 module.exports.getAllOrders = async (req, res) => {
     try{
         const orders = await Order.find({}).populate("user").populate("items.itemId").sort({createdAt: -1});
@@ -79,7 +119,7 @@ module.exports.getOrderStats = async (req, res) => {
     res.json({success: true, data: stats});
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: "Something went wrong" });
+    res.status(500).json({success:false, message: err.message || "Something went wrong" });
   }
 }
 
@@ -103,7 +143,7 @@ module.exports.updateAllStatus = async(req, res) => {
 
       if (status === 'Out for delivery') {
         emailPromises.push(
-          sendMail(userEmail, 'Order Update', 'Your order is out for delivery 🚚')
+          sendMail(userEmail, 'Out of delivery', 'Your order is out for delivery 🚚')
         );
       } else if (status === 'Delivered') {
         emailPromises.push(
@@ -119,7 +159,7 @@ module.exports.updateAllStatus = async(req, res) => {
 
     res.json({success: true, message: `All orders marked as '${status}'`, updated: updated.modifiedCount });
   }catch(err){
-    res.json({success:false, message: err.message});
+    res.json({success:false, message: err.message || "Status update failed"});
   }
 }
 
@@ -151,7 +191,7 @@ module.exports.deleteAllOrders = async(req, res) => {
     res.json({ success: true, deletedCount: result.deletedCount });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: "Failed to delete orders" });
+    res.status(500).json({ success: false, message: "Failed to delete orders" });
   }
 }
 
@@ -163,44 +203,6 @@ function extractPublicId(url) {
     return `payment_screenshots/${publicId}`;
   } catch (err) {
     return null;
-  }
-}
-
-module.exports.cancelOrder = async(req, res) => {
-  try {
-    const orderId = req.params.id;
-
-    //Add check that user owns the order (security)
-    const order = await Order.findById(orderId);
-
-    if (!order) return res.status(404).json({ message: "Order not found" });
-    if (order.status !== 'Preparing') {
-      return res.status(400).json({ message: "Order cannot be cancelled now" });
-    }
-
-    order.status = "Cancelled";
-    await order.save();
-
-    res.json({ success: true, message: "Order cancelled" });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Failed to cancel order" });
-  }
-}
-
-module.exports.orderPayment = async(req, res) =>{ 
-  try {
-    const { id } = req.params;
-    const screenshotUrl = req.file.path;
-
-    await Order.findByIdAndUpdate(id, {
-      paymentScreenshot: screenshotUrl
-    });
-
-    res.json({ success: true, screenshot: screenshotUrl });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ success: false, error: 'Upload failed' });
   }
 }
 

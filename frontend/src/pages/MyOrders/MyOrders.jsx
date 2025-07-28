@@ -15,12 +15,10 @@ const MyOrders = () => {
         try{
             const response = await axios.get(`${url}/order/allorders`, {withCredentials: true});
             if(response.data.success){
-                setData(response.data.data)
-                console.log(response.data.data);
+                setData(response.data.data);
             }
         }catch(err) {
-            console.log("Failed" + err);
-            
+            toast.error(err.response?.data?.message);
         } 
     }
 
@@ -32,8 +30,7 @@ const MyOrders = () => {
                 getOrders(); 
             }
         } catch (err) {
-            console.error(err);
-            alert(err.response?.data?.error || "Error cancelling order");
+            toast.error(err.response?.data?.message || "Failed to cancel");
         }
     };
 
@@ -66,7 +63,10 @@ const MyOrders = () => {
                 <p><strong>Total:</strong> &#8377;{order.totalAmount}</p>
                 <p style={order.status == "Cancelled" ? {color: "tomato"}: {color: "green"}}><b>&#x25cf; {order.status}</b></p>
                 <div className='btns'>
-                    <button onClick={() => navigate(`/myorders/${order._id}/pay`)}>Pay</button>
+                    {order.status !== "Cancelled" && 
+                    <button onClick={() => navigate(`/myorders/${order._id}/pay`)}>
+                        Pay
+                    </button>}
                     {order.status === "Preparing" && (
                     <button onClick={() => cancelOrder(order._id)}>
                         Cancel

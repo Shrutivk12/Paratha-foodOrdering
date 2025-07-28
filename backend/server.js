@@ -51,7 +51,7 @@ passport.deserializeUser(User.deserializeUser());
 
 
 //add new food item
-app.use("/api/food", foodRouter);
+app.use("/food", foodRouter);
 app.use("/images", express.static('uploads'));
 
 //user

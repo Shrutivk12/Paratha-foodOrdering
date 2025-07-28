@@ -23,6 +23,12 @@ const userSchema = new Schema({
 
 userSchema.plugin(passportLocalMongoose, {
     usernameField: "email",
+    passwordValidator: function (password, cb) {
+        if (password.length < 8) {
+            return cb("Password must be at least 8 characters long.");
+        }
+        return cb(); // no error
+    },
     errorMessages: {
     UserExistsError: 'A user with this email is already registered.',
     }

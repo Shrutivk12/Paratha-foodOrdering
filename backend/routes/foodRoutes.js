@@ -14,10 +14,9 @@ const storage = multer.diskStorage({
 })
 const upload = multer({storage: storage});
 
-router.post("/add", upload.single('image'), wrapAsync(foodController.addFood) );
-router.get("/list",  wrapAsync(foodController.showFoodList) );
-router.post("/remove",  wrapAsync(foodController.removeFood) );
-
-router.post("/:id/instock", wrapAsync(foodController.updateInStock));
+router.post("/admin/add", upload.single('image'), wrapAsync(foodController.addFood) );
+router.get("/admin/list",  wrapAsync(foodController.showFoodList) );
+router.post("/admin/remove",  wrapAsync(foodController.removeFood) );
+router.post("/admin/:id/instock", wrapAsync(foodController.updateInStock));
 
 module.exports = router;
