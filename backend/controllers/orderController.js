@@ -11,7 +11,7 @@ module.exports.placeOrder = async (req, res) => {
         const {items, totalAmount} = req.body;
 
         if (!items || items.length === 0 || items.every(item => item.quantity <= 0)) {
-            return res.status(400).json({ success: false, message: "Cart is empty" });
+            return res.json({ success: false, message: "Cart is empty" });
         }
         const order = new Order({user: req.user._id, items, totalAmount});
         await order.save();

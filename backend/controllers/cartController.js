@@ -26,11 +26,16 @@ module.exports.removeFromCart = async (req, res) => {
     try{
         let currUser = req.user;
         const cartData = currUser.cartData;
+        
         if(cartData[req.body.itemId] > 0){
             cartData[req.body.itemId] -= 1;
+
+            if (cartData[itemId] <= 0) {
+                delete cartData[itemId];
+            }
         }
         await User.findByIdAndUpdate(req.user._id, {cartData});
-        res.json({success: true, message: "Remove from cart"});
+        res.json({success: true, message: "Removed from cart"});
     }catch(err){
         console.log(err);
         res.json({success: false, message: "Error"});
