@@ -9,7 +9,7 @@ import { ToastContainer} from 'react-toastify';
 
 const App = () => {
 
-  const url = "https://paratha-server-h9kn.onrender.com";
+  const url = "https://paratha-server-kbjp.onrender.com";
 
   return (
     <div>
