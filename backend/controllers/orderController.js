@@ -100,7 +100,7 @@ module.exports.getOrderStats = async (req, res) => {
       },
       {
         $lookup: {
-          from: "foods",                     // collection name (check yours)
+          from: "foods",             
           localField: "_id",
           foreignField: "_id",
           as: "foodDetails"

@@ -9,7 +9,7 @@ import { toast } from 'react-toastify';
 const NavBar = ({setShowLogin}) => {
 
   let [menu, setMenu] = useState("home");
-  const{getTotalAmount, loggedIn, setLoggedIn, url, setUser} = useContext(StoreContext);
+  const{getTotalAmount, loggedIn, setLoggedIn, url} = useContext(StoreContext);
 
   const navigate = useNavigate();
   const logout = async() => {
@@ -17,7 +17,6 @@ const NavBar = ({setShowLogin}) => {
       const response = await axios.get(`${url}/user/logout`, {withCredentials: true});
       if(response.data.success){
         setLoggedIn(false);
-        setUser(null);
         toast.success(response.data.message);
         navigate("/");
       }

@@ -2,7 +2,6 @@ const passport = require('passport');
 
 module.exports = (req, res, next) => {
   passport.authenticate('local', (err, user, info) => {
-    console.log(info);
     if (err) return next(err);
     if (!user) {
       return res.json({

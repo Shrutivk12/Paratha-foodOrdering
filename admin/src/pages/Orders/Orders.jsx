@@ -10,6 +10,9 @@ const Orders = ({url}) => {
 
   const [data, setData] = useState([]);
   const [orderStats, setOrderStats] = useState([]);
+  const [outForDel, setOutForDel] = useState(false);
+  const [delivered, setDelivered] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
   const getOrders = async() => {
     try{
@@ -36,6 +39,11 @@ const Orders = ({url}) => {
   }
 
   const markAllOrders = async (newStatus) => {
+    if(newStatus === "Out for delivery"){
+      setOutForDel(true);
+    }else if(newStatus === "Delivered"){
+      setDelivered(true);
+    }
     try {
       const res = await axios.post(`${url}/order/admin/allstatus`, { status: newStatus });
       if(res.data.success){
@@ -45,10 +53,14 @@ const Orders = ({url}) => {
 
     } catch (err) {
       toast.error(err.response?.data?.message);
+    } finally {
+      setOutForDel(false);
+      setDelivered(false);
     }
   };
 
   const handleDeleteOrders = async () => {
+    setDeleting(true);
     try {
       const res = await axios.delete(`${url}/order/admin/delete`);
       if(res.data.success){
@@ -57,6 +69,8 @@ const Orders = ({url}) => {
       }
     } catch (err) {
       toast.error(err.response?.data?.message);
+    } finally {
+      setDeleting(false);
     }
   };
 
@@ -64,7 +78,7 @@ const Orders = ({url}) => {
     try {
       const res = await axios.post(`${url}/order/admin/${orderId}/paid`);
       if (res.data.success) {
-        toast.success("Mark as paid");
+        toast.success("Marked as paid");
         getOrders(); 
       }
       else{
@@ -98,9 +112,9 @@ const Orders = ({url}) => {
         ))}
         </div>
         <div className='btns'>
-          <button onClick={() => markAllOrders("Out for delivery")}>All Out for delivery</button>
-          <button onClick={() => markAllOrders("Delivered")}>All Delivered</button>
-          <button onClick={() => handleDeleteOrders()}>Delete Old Orders</button>
+          <button onClick={() => markAllOrders("Out for delivery")} disabled={outForDel}>{outForDel? "Loading..." : "All Out for delivery"}</button>
+          <button onClick={() => markAllOrders("Delivered")} disabled={delivered}>{delivered? "Loading..." : "All Delivered"}</button>
+          <button onClick={() => handleDeleteOrders()} disabled={deleting}>{deleting? "Loading..." : "Delete Old Orders"}</button>
         </div>
       </div>
       <div className='order-list'>

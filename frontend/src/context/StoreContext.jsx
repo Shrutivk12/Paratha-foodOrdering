@@ -7,8 +7,7 @@ export const StoreContext = createContext(null);
 const StoreContextProvider = (props) =>{
 
     const [cartItems, setCartItems] = useState({});
-    const url = "https://name-server.onrender.com";
-    const [user, setUser] = useState({});
+    const url = "http://localhost:8080";
     const [loggedIn, setLoggedIn] = useState(false);
 
     const [food_list, setFoodList] = useState([]);
@@ -18,22 +17,18 @@ const StoreContextProvider = (props) =>{
     }
 
     useEffect(() => {
-        // console.log("Checking auth...");
         const checkAuth = async () => {
             try {
                 await getFoodList();
                 const res = await axios.get(`${url}/user/isauth`, {withCredentials: true});
                 if (res.data.success) {
                     setLoggedIn(true);
-                    setUser(res.data.user);
                     await loadCartData(loggedIn);
                 } else {
                     setLoggedIn(false);
-                    setUser(null);
                 }
             } catch (error) {
                 setLoggedIn(false);
-                setUser(null);
             }
         };
         checkAuth();
@@ -87,8 +82,6 @@ const StoreContextProvider = (props) =>{
         removeFromCart,
         getTotalAmount,
         url,
-        user,
-        setUser,
         loggedIn,
         setLoggedIn,
     }
