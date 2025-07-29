@@ -38,7 +38,6 @@ const NavBar = ({setShowLogin}) => {
         <a href='/#footer' onClick={() => {setMenu("contact-us")}} className={menu === "contact-us" ? "active" : ""}>Contact us</a>
       </ul>
       <div className="navbar-right">
-        <i className="fa-solid fa-magnifying-glass"></i>
         <Link to='/cart'>
         <div className="navbar-cart-icon">
           <i className="fa-solid fa-cart-shopping"></i>
