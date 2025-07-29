@@ -21,7 +21,8 @@ const orderRouter = require("./routes/orderRoutes.js");
 app.use(express.json());
 app.use(cors({
   origin: ["https://paratha-admin.onrender.com","https://paratha-order.onrender.com"], // React frontend origin
-  credentials: true 
+  credentials: true,
+  optionsSuccessStatus: 200
 }));
 
 //db connection
@@ -35,6 +36,7 @@ store.on("error", () =>{
   console.log("error in session store", err);
 });
 
+app.set("trust proxy", 1);
 app.use(session(sessionOptions));
 
 app.use(passport.initialize());
