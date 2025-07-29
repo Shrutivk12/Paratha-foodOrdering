@@ -7,7 +7,7 @@ export const StoreContext = createContext(null);
 const StoreContextProvider = (props) =>{
 
     const [cartItems, setCartItems] = useState({});
-    const url = "http://localhost:8080";
+    const url = "https://paratha-server-h9kn.onrender.com";
     const [loggedIn, setLoggedIn] = useState(false);
 
     const [food_list, setFoodList] = useState([]);
