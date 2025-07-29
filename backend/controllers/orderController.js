@@ -14,7 +14,7 @@ module.exports.placeOrder = async (req, res) => {
         await User.findByIdAndUpdate(req.user._id, { cartData: {} });
         res.json({ success: true, message: "Order Placed", order });
     }catch(err){
-        res.json({ success: false, message: "Failed to place order" });
+        res.json({ success: false, message: err.message || "Failed to place order" });
     }
 }
 
