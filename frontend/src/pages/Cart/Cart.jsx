@@ -28,9 +28,9 @@ const Cart = () => {
         toast.success("Order placed");
         navigate("/myorders");
       } else {
-        toast.error("Failed to place order");
+        toast.error(res.data.message || "Failed to place order");
       }
-    }catch{
+    }catch(err){
       toast.error(err.response?.data?.message);
     }
   }
