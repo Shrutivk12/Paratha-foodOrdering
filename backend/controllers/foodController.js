@@ -46,7 +46,7 @@ module.exports.updateInStock = async(req, res) => {
     try {
         const { inStock } = req.body;
         const food = await Food.findByIdAndUpdate(req.params.id, { inStock }, { new: true });
-        res.json(food);
+        res.json({success: true, food});
     } catch (err) {
         res.status(500).json({success: false, message: "Failed to update stock status" });
     }
