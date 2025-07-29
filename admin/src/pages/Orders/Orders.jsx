@@ -90,9 +90,9 @@ const Orders = ({url}) => {
   };
 
   useEffect(()=>{
-    getOrders();
     const getOrdersStats = async () => {
       try {
+        await getOrders();
         const res = await axios.get(`${url}/order/admin/parathastats`);
         setOrderStats(res.data.data);
       } catch (error) {
@@ -100,6 +100,8 @@ const Orders = ({url}) => {
       }
     }
     getOrdersStats();
+    const intervalId = setInterval(getOrdersStats, 5000);
+    return () => clearInterval(intervalId);
   },[])
 
   return (

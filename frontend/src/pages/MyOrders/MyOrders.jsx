@@ -35,10 +35,12 @@ const MyOrders = () => {
     };
 
     useEffect(() =>{
-        if(loggedIn){
-            getOrders();
-        }
-        
+        if (!loggedIn) return;
+
+        const interval = setInterval(getOrders, 5000);
+        getOrders(); 
+
+        return () => clearInterval(interval);
     },[loggedIn]);
     
   return (
