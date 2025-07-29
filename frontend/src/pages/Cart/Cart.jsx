@@ -31,7 +31,7 @@ const Cart = () => {
         toast.error("Failed to place order");
       }
     }catch{
-      toast.error(err.response?.data?.message || "Failed to place order");
+      toast.error(err.response?.data?.message);
     }
   }
 
