@@ -9,7 +9,7 @@ import { ToastContainer} from 'react-toastify';
 
 const App = () => {
 
-  const url = "http://localhost:8080";
+  const url = "https://paratha-server-h9kn.onrender.com";
 
   return (
     <div>
