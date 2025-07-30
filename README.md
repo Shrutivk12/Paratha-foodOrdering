@@ -81,6 +81,6 @@ A full-stack custom web application for college students to order parathas and m
 ---
 
 ## 👨‍💻 Author
-Built with ❤️ by Shruti Vishwakarma
-Reach out at vkshruti1208@gmail.com
+Built with ❤️ by Shruti Vishwakarma \n
+Reach out at vkshruti1208@gmail.com \n
 Thanks for visiting
