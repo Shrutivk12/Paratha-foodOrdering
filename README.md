@@ -2,7 +2,7 @@
 
 A full-stack custom web application for college students to order parathas and manage orders efficiently, replacing manual WhatsApp ordering. Includes student authentication, cart management, admin panel for stock/orders, and UPI-based payment tracking.
 
-🌐 Live Site
+## 🌐 Live Site
 - Client side: https://paratha-order.onrender.com
 - Admin side: https://paratha-admin.onrender.com
 
